@@ -9,6 +9,21 @@
 
 #define PORT 8080
 
+void http_response (char * dest){
+    char line[10000];
+    char html[100000] = "";
+    FILE * fpointer = fopen("index.html", "r");
+
+    while (fgets(line, 255, fpointer)){
+        // line[ strcspn(line, "\n" ) ] = '\0';
+        strcat(html, line);
+    }
+
+    fclose(fpointer);
+
+    strcat(dest,html);
+}
+
 int main(int argc, char const *argv[])
 {
     //Instatiating variables for socket
@@ -16,7 +31,9 @@ int main(int argc, char const *argv[])
     struct sockaddr_in address;
     int addrlen = sizeof(address);
     
-    char *hello = "Hello from server";
+    //Change response based on type
+    char response [100000] = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 100000\n\n ";
+    http_response(response);
     
     // Creating socket
     //socket parameters (domain/address family (IP, IPv6 etc), type of service, protcol that is 0 in this case for TCP)
@@ -64,7 +81,7 @@ int main(int argc, char const *argv[])
         char buffer[30000] = {0};
         valread = read( new_socket , buffer, 30000);
         printf("%s\n",buffer );
-        write(new_socket , hello , strlen(hello));
+        write(new_socket , response , strlen(response));
         printf("------------------Hello message sent-------------------\n");
 
         //Close socket when finished
