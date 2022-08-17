@@ -41,7 +41,7 @@ The *handle_connections* method is capable of returning the http requests includ
 
 The single-threaded Rust HTTP Web Server can be accessed by first cloning the repository and then navigating to */Rust_Webserver/Single-Threaded* directory. This implementation utilizes Rusts's cargo structures which implement the files below:
 
-[Cargo.toml](noele2/Web-Server/Rust_Webserver/Single-Threaded/Cargo.toml)
+[Cargo.toml](Rust_webserver/Single-Threaded/Cargo.lock)
 [Cargo.lock](noele2/Web-Server/Rust_Webserver/Single-Threaded/Cargo.lock)
 
 As such the server code can be run using the following simple command
@@ -115,10 +115,16 @@ The resulting response from the server side was the simple Hello Message that as
     ------------------Hello message sent-------------------
     +++++++ Waiting for new connection ++++++++
 
-Now once the TCP connection, was established, the http responses of the web server were also implemented. This was done by changing the buffer format to that of http respose as seen 
+Now once the TCP connection, was established, the http responses of the web server were also implemented. This was done by changing the buffer format to that of http response. To do this, the html files were read and concatenated to the existing response buffers using the string input libraries. 
 
 ![TCP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages/httpmsg2.png)
 
+Now, once the the server code was compiled and run using the commands
+
+    gcc -o server server.c 
+    ./server
+
+We, could navigate to the *localhost:8080/index.html* (port 8080 for http) to get the appropriate request on the server side as seen below. Only the first line is utilized by the server:
 
 
     +++++++ Waiting for new connection ++++++++
@@ -134,3 +140,23 @@ Now once the TCP connection, was established, the http responses of the web serv
     Accept-Language: en-US,en;q=0.9
     ------------------Hello message sent-------------------
     +++++++ Waiting for new connection ++++++++
+
+The result was to write the index.html file to the client browser so that they could interact with the web server. The corresponding http command were optimized and implemented separately for program. 
+
+### Multi Threaded
+
+The Multi-Threaded approach to building this web server aimed to be able to have the web server able to serve multiple clients concurrently. 
+
+The approach involved utilized C's [POSIX Threads Library](https://en.wikipedia.org/wiki/Pthreads). Basically a pool of threads was used to run different client operations concurrently. This was initially experimented in [threads.c](noele2/Web-Server/C_Webserver/Multi-Threaded/threads.c) where it was shown that running the same task on three different threads resulted in concurrent results:
+
+    Starting Thread
+    Starting Thread
+    Starting Thread
+    Ending Thread
+    Ending Thread
+    Ending Thread
+
+Utilizing, this tool the server side code was absconded into a multi-threaded function so that each new socket was only writing back to a client based on the thread pool availability and the task queue.  
+
+
+

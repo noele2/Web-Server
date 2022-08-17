@@ -15,10 +15,13 @@ struct args {
 
 //Testing Thread's Routine 
 void* threadTestRoutine(void *input) {
-    printf("Hello from threads %d \n", ((struct args*)input)->height);
-    printf("fd %s \n", ((struct args*)input)->http);
+    // printf("Hello from threads %d \n", ((struct args*)input)->height);
+    // printf("fd %s \n", ((struct args*)input)->http);
+    // sleep(3);
+    // printf("Ending thread%d \n",((struct args*)input)->response_len);
+    printf("Starting Thread\n");
     sleep(3);
-    printf("Ending thread%d \n",((struct args*)input)->response_len);
+    printf("Ending Thread\n");
 }
 
 
