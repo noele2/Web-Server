@@ -90,4 +90,47 @@ The C implementation of the HTTP Web Server includes both a single-threaded and 
 
 ### Single Threaded
 
-The 
+This program is once again broken up into two different methods: one method to handle the TCP connection and the other method to handle the implemented http requests. 
+
+The first method that was implemented was the TCP layer. This was done using a pseudo implementation of a client-server pair. The server code simply utilized C sockets The code implemented the following 5 step process:
+1. Create the socket
+2. Identify the socket
+3. On the server, wait for an incoming connection
+4. Send and receive messages
+5. Close the socket
+
+For every new incoming connection, a new socket with the appropriate socket parameters. On the client side for this TCP implementation, the code was mostly the same except for the conversion of the IPv6 addresses to binary as well as the send/read commands on the socket to the server TCP port(8080). 
+
+To run this TCP protocol demonstration the server file was compiled before the client file using the following commands in the C_Webserver/Single-Threaded directory:
+
+    gcc -o server server.c 
+    ./server
+    gcc -o client client.c 
+    ./client
+
+The resulting response from the server side was the simple Hello Message that as tested as a buffer:
+
+    +++++++ Waiting for new connection ++++++++
+    Hello from client
+    ------------------Hello message sent-------------------
+    +++++++ Waiting for new connection ++++++++
+
+Now once the TCP connection, was established, the http responses of the web server were also implemented. This was done by changing the buffer format to that of http respose as seen 
+
+![TCP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages/httpmsg2.png)
+
+
+
+    +++++++ Waiting for new connection ++++++++
+    GET /index.html HTTP/1.1
+    Host: localhost:8080
+    Connection: keep-alive
+    Cache-Control: max-age=0
+    Upgrade-Insecure-Requests: 1
+    User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.162 Safari/537.36
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+    DNT: 1
+    Accept-Encoding: gzip, deflate, br
+    Accept-Language: en-US,en;q=0.9
+    ------------------Hello message sent-------------------
+    +++++++ Waiting for new connection ++++++++
