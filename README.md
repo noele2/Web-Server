@@ -41,8 +41,8 @@ The *handle_connections* method is capable of returning the http requests includ
 
 The single-threaded Rust HTTP Web Server can be accessed by first cloning the repository and then navigating to */Rust_Webserver/Single-Threaded* directory. This implementation utilizes Rusts's cargo structures which implement the files below:
 
-[Cargo.toml](Rust_webserver/Single-Threaded/Cargo.lock)
-[Cargo.lock](noele2/Web-Server/Rust_Webserver/Single-Threaded/Cargo.lock)
+[Cargo.toml](Rust_webserver/Single-Threaded/Cargo.toml)
+[Cargo.lock](Rust_webserver/Single-Threaded/Cargo.lock)
 
 As such the server code can be run using the following simple command
 
@@ -147,7 +147,7 @@ The result was to write the index.html file to the client browser so that they c
 
 The Multi-Threaded approach to building this web server aimed to be able to have the web server able to serve multiple clients concurrently. 
 
-The approach involved utilized C's [POSIX Threads Library](https://en.wikipedia.org/wiki/Pthreads). Basically a pool of threads was used to run different client operations concurrently. This was initially experimented in [threads.c](noele2/Web-Server/C_Webserver/Multi-Threaded/threads.c) where it was shown that running the same task on three different threads resulted in concurrent results:
+The approach involved utilized C's [POSIX Threads Library](https://en.wikipedia.org/wiki/Pthreads). Basically a pool of threads was used to run different client operations concurrently. This was initially experimented in [threads.c](C_Webserver/Multi-Threaded/threads.c) where it was shown that running the same task on three different threads resulted in concurrent results:
 
     Starting Thread
     Starting Thread
@@ -158,5 +158,21 @@ The approach involved utilized C's [POSIX Threads Library](https://en.wikipedia.
 
 Utilizing, this tool the server side code was absconded into a multi-threaded function so that each new socket was only writing back to a client based on the thread pool availability and the task queue.  
 
+The thread pool basically assigned each new socket to the next available thread pool at a particular index which was kept track by a dynamic mapping sequence. Once the thread was in play, modifying the client response, it was locked basically implementing the mutex architecture from scratch, causing the scheduler to assign a different available thread.
+
+Every certain iterations and after a certain time period, all the threads were joined to output their results to the client and then free them for the next request. 
+
+This optimized architecture allowed for the increased efficiency of concurrent multi-threaded HTTP web server in C which allowed multiple client to access the server from the browser after simply compiling
+
+    gcc -o server server.c 
+    ./server
+
+and navigating to the *localhost:8080/index.html* link on many windows as the server is now concurrently running. 
+
+## Conclusion
+
+Overall, both Rust and C were able to implement a multi-threaded HTTP Web Server efficiently. However, both languages had their separate advantages. Rust proved to work very well for concurrent processes, especially for TCP channels by quickly shutting down and starting the TCP listeners. However, implemented thread pool within Rust while efficient and safe resulted in an extensive amount of coding framework. On the other hand, while C is not built for web server programming, the POSIX thread usage was much simpler than Rust's and was able to implemented for different tasks much faster. 
+
+At the end, utilizing and implementing http commands, POSIX threading in a concurrent model proved to be faster in Rust. In fact, additional scaling performance and tests deployed in the pipeline showed much faster processing times for the Rust implementation. 
 
 
