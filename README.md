@@ -2,6 +2,17 @@
 
 This project revolves around developing a single and multi-threaded HTTP Web Server in both C and Rust.  
 
+- [Web_Server](#web_server)
+  - [Rust Web Server](#rust-web-server)
+    - [Single Threaded](#single-threaded)
+    - [Multi-Threaded](#multi-threaded)
+  - [C Web Server](#c-web-server)
+    - [Single Threaded](#single-threaded-1)
+    - [Multi Threaded](#multi-threaded-1)
+  - [Conclusion](#conclusion)
+
+
+
 ## Rust Web Server
 
 The Rust implementation of the HTTP Web Server includes both a single-threaded and multi-threaded approach for implementing a Web Server. 
